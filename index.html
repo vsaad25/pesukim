@@ -1,245 +1,64 @@
 <!doctype html>
-<html lang="es" class="h-full">
+<html lang="es" dir="rtl">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Pesukim • Random, Favoritos, Búsqueda</title>
-  <meta name="theme-color" content="#0f172a">
-  <link rel="manifest" href="manifest.json">
-  <link rel="icon" href="icons/icon-192.png" />
-  <!-- Tailwind CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    .hebrew { font-family: "Taamey Frank", "SBL Hebrew", "Noto Serif Hebrew", serif; }
-  </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Pesukim</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
-<body class="h-full bg-slate-950 text-slate-100">
-  <div class="max-w-3xl mx-auto p-4 sm:p-6">
-    <header class="flex items-center justify-between mb-4">
-      <h1 class="text-2xl sm:text-3xl font-semibold">Pesukim</h1>
-      <div class="flex items-center gap-2">
-        <button id="toggleTheme" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-sm">Tema</button>
-        <button id="openSettings" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-sm">Datos</button>
+<body>
+  <div class="container">
+    <header class="row controls">
+      <h1>Resultados / Favoritos</h1>
+      <div class="row">
+        <select id="filterBook">
+          <option value="">Todos los libros</option>
+          <!-- ... -->
+        </select>
+        <button id="btnFavs" class="btn-ghost">Solo favoritos</button>
+        <button id="btnClear" class="btn-ghost">Limpiar</button>
       </div>
     </header>
 
-    <section class="grid gap-3 sm:grid-cols-3 mb-4">
-      <button id="btnRandom" class="px-4 py-3 rounded-2xl bg-indigo-600 hover:bg-indigo-500 font-medium">Verso aleatorio (R)</button>
-      <input id="searchInput" type="search" placeholder="Buscar en hebreo/español o por ref. (p.ej. Tehilim 23:1)"
-             class="col-span-2 px-4 py-3 rounded-2xl bg-slate-900 border border-slate-800 outline-none focus:border-indigo-500">
-    </section>
-
-    <section id="verseCard" class="hidden rounded-2xl border border-slate-800 bg-slate-900 p-5 space-y-3">
-      <div class="text-xs text-slate-400" id="verseRef"></div>
-      <div class="text-xl leading-relaxed hebrew" id="verseHe"></div>
-      <div class="text-base leading-relaxed text-slate-200" id="verseEs"></div>
-      <div class="flex flex-wrap gap-2 pt-2">
-        <button id="btnFav" class="px-3 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-sm">Añadir a favoritos</button>
-        <button id="btnCopy" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-sm">Copiar</button>
-        <button id="btnShare" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-sm">Compartir</button>
-        <button id="btnPrev" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-sm">Anterior</button>
-        <button id="btnNext" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-sm">Siguiente</button>
+    <!-- Tarjeta del verso activo -->
+    <section id="verseCard" class="card" hidden>
+      <div id="verseRef"></div>
+      <div id="verseHe"></div>
+      <div id="verseEs"></div>
+      <div class="row" style="margin-top:8px">
+        <button id="btnPrev" class="btn-ghost">Anterior</button>
+        <button id="btnNext" class="btn-ghost">Siguiente</button>
+        <button id="btnCopy" class="btn-ghost">Copiar</button>
+        <button id="btnShare" class="btn-ghost">Compartir</button>
       </div>
     </section>
 
-    <section class="mt-6">
-      <div class="flex items-center justify-between mb-2">
-        <h2 class="text-lg font-semibold">Resultados / Favoritos</h2>
-        <div class="flex items-center gap-2">
-          <select id="filterBook" class="px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-sm">
-            <option value="">Todos los libros</option>
-          </select>
-          <button id="showFavs" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-sm">Solo favoritos</button>
-          <button id="clearSearch" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-sm">Limpiar</button>
-        </div>
+    <!-- Buscador por libro + letra -->
+    <section class="card" style="margin-top:14px;padding:12px">
+      <h2>Buscar Pesukim por Letra Inicial</h2>
+      <p class="subtle">Selecciona un libro y una letra inicial en hebreo:</p>
+      <div class="row">
+        <select id="bookSelect"></select>
+        <input id="letterInput" maxlength="1" placeholder="א">
+        <button id="btnSearch">Buscar</button>
       </div>
-      <ul id="list" class="divide-y divide-slate-800 rounded-2xl overflow-hidden border border-slate-800 bg-slate-900"></ul>
+
+      <div class="keyboard" id="kbd">
+        <!-- mini teclado hebreo -->
+        <button>א</button><button>ב</button><button>ג</button><button>ד</button><button>ה</button>
+        <button>ו</button><button>ז</button><button>ח</button><button>ט</button><button>י</button>
+        <button>כ</button><button>ל</button><button>מ</button><button>נ</button><button>ס</button>
+        <button>ע</button><button>פ</button><button>צ</button><button>ק</button><button>ר</button>
+        <button>ש</button><button>ת</button>
+      </div>
+
+      <div id="results" class="card"></div>
     </section>
+
+    <!-- Lista de resultados/favoritos -->
+    <ul id="list" class="list card" style="margin-top:14px"></ul>
   </div>
 
-  <!-- Modal de configuración/importación de datos -->
-  <dialog id="settingsDialog" class="backdrop:bg-black/60 rounded-2xl w-[min(900px,95vw)]">
-    <form method="dialog" class="p-4 sm:p-6 bg-slate-900 text-slate-100 rounded-2xl border border-slate-700">
-      <header class="flex items-center justify-between mb-3">
-        <h3 class="text-xl font-semibold">Datos de pesukim</h3>
-        <button class="px-3 py-1 rounded-xl bg-slate-800 hover:bg-slate-700">Cerrar</button>
-      </header>
-      <p class="text-sm text-slate-400 mb-3">
-        Aquí puedes pegar/editar tu colección. Formato esperado: arreglo de objetos
-        <code class="bg-slate-800 px-1 rounded">{"ref","book","he","es"}</code>.
-        Se guarda en <code>localStorage</code>. También puedes importar/exportar archivo JSON.
-      </p>
-      <textarea id="dataEditor" class="w-full h-64 bg-slate-950 border border-slate-800 rounded-xl p-3 font-mono text-sm"></textarea>
-      <div class="mt-3 flex flex-wrap gap-2">
-        <button id="btnSaveData" class="px-3 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500">Guardar</button>
-        <button id="btnDownload" type="button" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700">Exportar JSON</button>
-        <label class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 cursor-pointer">
-          Importar JSON<input id="fileImport" type="file" accept="application/json" class="hidden">
-        </label>
-        <button id="btnSeed" type="button" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700">Cargar demo</button>
-      </div>
-    </form>
-  </dialog>
-
-  <script src="script.js" defer></script>
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => navigator.serviceWorker.register('sw.js'));
-    }
-  </script>
-</body>
-</html>    }
-
-    select, input, button {
-      padding: 10px;
-      margin: 10px;
-      font-size: 16px;
-      border-radius: 5px;
-      border: 1px solid #444; /* Bordes más oscuros */
-      background-color: #2c2c2c; /* Fondo oscuro para inputs */
-      color: #ffffff; /* Texto claro */
-    }
-
-    button {
-      background-color: #1e88e5; /* Azul intenso */
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background-color: #1565c0; /* Azul más oscuro */
-    }
-
-    .keyboard {
-      margin-top: 20px;
-      display: flex;
-      justify-content: center; /* Centramos el teclado */
-      flex-wrap: wrap;
-      gap: 10px; /* Separación uniforme entre botones */
-      direction: rtl; /* Orientación del teclado */
-    }
-
-    .keyboard button {
-      margin: 5px;
-      padding: 15px;
-      font-size: 18px;
-      cursor: pointer;
-      border: none;
-      background-color: #2c2c2c; /* Fondo oscuro para teclas */
-      color: #ffffff; /* Texto claro */
-      border-radius: 4px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-    }
-
-    .keyboard button:hover {
-      background-color: #444; /* Fondo más claro al pasar el mouse */
-    }
-
-    #results {
-      margin-top: 20px;
-      padding: 15px;
-      text-align: right;
-      direction: rtl;
-      background: #1c1c1c; /* Fondo oscuro */
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    }
-  </style>
-</head>
-<body>
-  <header>
-    <h1>Buscar Pesukim por Letra Inicial</h1>
-  </header>
-
-  <div class="container">
-    <p>Selecciona un libro y una letra inicial en hebreo:</p>
-    <select id="selectBook">
-      <option value="Genesis">Génesis - בראשית</option>
-      <option value="Exodus">Éxodo - שמות</option>
-      <option value="Leviticus">Levítico - ויקרא</option>
-      <option value="Numbers">Números - במדבר</option>
-      <option value="Deuteronomy">Deuteronomio - דברים</option>
-    </select>
-    <input type="text" id="inputLetter" maxlength="1" placeholder="א">
-    <div class="keyboard" id="keyboard"></div>
-    <button onclick="fetchBook()">Buscar</button>
-    <div id="results"></div>
-  </div>
-
-  <script>
-    // Crear el teclado virtual dinámico
-    document.addEventListener("DOMContentLoaded", () => {
-      const hebrewLetters = [
-        "א", "ב", "ג", "ד", "ה", "ו", "ז", "ח", "ט",
-        "י", "כ", "ל", "מ", "נ", "ס", "ע", "פ", "צ",
-        "ק", "ר", "ש", "ת"
-      ];
-
-      const keyboardDiv = document.getElementById("keyboard");
-      const inputLetter = document.getElementById("inputLetter");
-
-      // Crear botones para el teclado
-      hebrewLetters.forEach(letter => {
-        const button = document.createElement("button");
-        button.textContent = letter;
-        button.onclick = () => {
-          inputLetter.value = letter; // Escribir la letra en el campo de texto
-        };
-        keyboardDiv.appendChild(button);
-      });
-    });
-
-    // Función para buscar pesukim
-    async function fetchBook() {
-      const book = document.getElementById("selectBook").value;
-      const letter = document.getElementById("inputLetter").value.trim();
-      const resultsDiv = document.getElementById("results");
-      const results = [];
-
-      if (!letter) {
-        resultsDiv.textContent = "Por favor, introduce una letra inicial.";
-        return;
-      }
-
-      resultsDiv.textContent = `Buscando pesukim en ${book}... Esto puede tardar un momento.`;
-
-      for (let chapter = 1; chapter <= 50; chapter++) {
-        const apiUrl = `https://www.sefaria.org/api/texts/${book}.${chapter}?context=0`;
-
-        try {
-          const response = await fetch(apiUrl);
-          if (response.ok) {
-            const data = await response.json();
-            const hebrewTexts = data.he;
-
-            if (hebrewTexts) {
-              const filteredPesukim = hebrewTexts
-                .map((pasuk, index) => ({
-                  text: pasuk,
-                  verse: index + 1,
-                }))
-                .filter(pasuk => pasuk.text.startsWith(letter));
-
-              filteredPesukim.forEach(pasuk => {
-                results.push(`${book} ${chapter}:${pasuk.verse} - ${pasuk.text}`);
-              });
-            }
-          }
-        } catch (error) {
-          console.error(`Error al obtener ${book} ${chapter}:`, error);
-        }
-      }
-
-      if (results.length > 0) {
-        resultsDiv.innerHTML = `
-          <h3>Pesukim que comienzan con '${letter}' en ${book}:</h3>
-          <p>${results.join("<br><br>")}</p>
-        `;
-      } else {
-        resultsDiv.textContent = `No se encontraron pesukim que comiencen con '${letter}' en ${book}.`;
-      }
-    }
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
