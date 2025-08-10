@@ -1,40 +1,94 @@
-<!DOCTYPE html>
-<html lang="he">
+<!doctype html>
+<html lang="es" class="h-full">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Buscar Pesukim</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Pesukim • Random, Favoritos, Búsqueda</title>
+  <meta name="theme-color" content="#0f172a">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icons/icon-192.png" />
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    /* Estilos generales */
-    body {
-      font-family: 'Arial', sans-serif;
-      text-align: center;
-      margin: 0;
-      padding: 0;
-      background-color: #121212; /* Fondo oscuro */
-      color: #ffffff; /* Texto claro */
-    }
+    .hebrew { font-family: "Taamey Frank", "SBL Hebrew", "Noto Serif Hebrew", serif; }
+  </style>
+</head>
+<body class="h-full bg-slate-950 text-slate-100">
+  <div class="max-w-3xl mx-auto p-4 sm:p-6">
+    <header class="flex items-center justify-between mb-4">
+      <h1 class="text-2xl sm:text-3xl font-semibold">Pesukim</h1>
+      <div class="flex items-center gap-2">
+        <button id="toggleTheme" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-sm">Tema</button>
+        <button id="openSettings" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-sm">Datos</button>
+      </div>
+    </header>
 
-    header {
-      background-color: #1e88e5;
-      color: white;
-      padding: 20px 10px;
-      margin-bottom: 20px;
-    }
+    <section class="grid gap-3 sm:grid-cols-3 mb-4">
+      <button id="btnRandom" class="px-4 py-3 rounded-2xl bg-indigo-600 hover:bg-indigo-500 font-medium">Verso aleatorio (R)</button>
+      <input id="searchInput" type="search" placeholder="Buscar en hebreo/español o por ref. (p.ej. Tehilim 23:1)"
+             class="col-span-2 px-4 py-3 rounded-2xl bg-slate-900 border border-slate-800 outline-none focus:border-indigo-500">
+    </section>
 
-    header h1 {
-      margin: 0;
-      font-size: 24px;
-    }
+    <section id="verseCard" class="hidden rounded-2xl border border-slate-800 bg-slate-900 p-5 space-y-3">
+      <div class="text-xs text-slate-400" id="verseRef"></div>
+      <div class="text-xl leading-relaxed hebrew" id="verseHe"></div>
+      <div class="text-base leading-relaxed text-slate-200" id="verseEs"></div>
+      <div class="flex flex-wrap gap-2 pt-2">
+        <button id="btnFav" class="px-3 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-sm">Añadir a favoritos</button>
+        <button id="btnCopy" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-sm">Copiar</button>
+        <button id="btnShare" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-sm">Compartir</button>
+        <button id="btnPrev" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-sm">Anterior</button>
+        <button id="btnNext" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-sm">Siguiente</button>
+      </div>
+    </section>
 
-    .container {
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 20px;
-      background: #1c1c1c; /* Fondo oscuro para el contenedor */
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-      border-radius: 8px;
+    <section class="mt-6">
+      <div class="flex items-center justify-between mb-2">
+        <h2 class="text-lg font-semibold">Resultados / Favoritos</h2>
+        <div class="flex items-center gap-2">
+          <select id="filterBook" class="px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-sm">
+            <option value="">Todos los libros</option>
+          </select>
+          <button id="showFavs" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-sm">Solo favoritos</button>
+          <button id="clearSearch" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-sm">Limpiar</button>
+        </div>
+      </div>
+      <ul id="list" class="divide-y divide-slate-800 rounded-2xl overflow-hidden border border-slate-800 bg-slate-900"></ul>
+    </section>
+  </div>
+
+  <!-- Modal de configuración/importación de datos -->
+  <dialog id="settingsDialog" class="backdrop:bg-black/60 rounded-2xl w-[min(900px,95vw)]">
+    <form method="dialog" class="p-4 sm:p-6 bg-slate-900 text-slate-100 rounded-2xl border border-slate-700">
+      <header class="flex items-center justify-between mb-3">
+        <h3 class="text-xl font-semibold">Datos de pesukim</h3>
+        <button class="px-3 py-1 rounded-xl bg-slate-800 hover:bg-slate-700">Cerrar</button>
+      </header>
+      <p class="text-sm text-slate-400 mb-3">
+        Aquí puedes pegar/editar tu colección. Formato esperado: arreglo de objetos
+        <code class="bg-slate-800 px-1 rounded">{"ref","book","he","es"}</code>.
+        Se guarda en <code>localStorage</code>. También puedes importar/exportar archivo JSON.
+      </p>
+      <textarea id="dataEditor" class="w-full h-64 bg-slate-950 border border-slate-800 rounded-xl p-3 font-mono text-sm"></textarea>
+      <div class="mt-3 flex flex-wrap gap-2">
+        <button id="btnSaveData" class="px-3 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500">Guardar</button>
+        <button id="btnDownload" type="button" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700">Exportar JSON</button>
+        <label class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 cursor-pointer">
+          Importar JSON<input id="fileImport" type="file" accept="application/json" class="hidden">
+        </label>
+        <button id="btnSeed" type="button" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700">Cargar demo</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="script.js" defer></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => navigator.serviceWorker.register('sw.js'));
     }
+  </script>
+</body>
+</html>    }
 
     select, input, button {
       padding: 10px;
