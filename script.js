@@ -301,3 +301,26 @@ loadData();
       resultsDiv.textContent = `No se encontraron pesukim que comiencen con '${letter}' en ${book}.`;
     }
   }
+// Evita tarjeta vacía al inicio
+const verseCard = document.getElementById('verseCard');
+const verseRef = document.getElementById('verseRef');
+const verseHe  = document.getElementById('verseHe');
+const verseEs  = document.getElementById('verseEs');
+
+function showVerse(v){
+  if(!v){ verseCard.hidden = true; return; }
+  verseCard.hidden = false;
+  verseRef.textContent = v.ref || '';
+  verseHe.textContent  = v.he  || '';
+  verseEs.textContent  = v.es  || '';
+}
+
+// Mini-teclado hebreo → rellena input
+document.getElementById('kbd')?.addEventListener('click', (e)=>{
+  if(e.target.tagName === 'BUTTON'){
+    const ch = e.target.textContent.trim();
+    const inp = document.getElementById('letterInput');
+    inp.value = ch;
+    inp.dispatchEvent(new Event('input'));
+  }
+});
