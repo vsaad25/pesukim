@@ -1,0 +1,50 @@
+[
+  {
+    "ref": "Bereshit 1:1",
+    "book": "Bereshit",
+    "he": "בְּרֵאשִׁית בָָרָ אֱלֹהִים אֵת הַשָׁ־מַיִם וְאֵת הָאֶרֶץ",
+    "es": "En el principio Hashem creó los cielos y la tierra."
+  },
+  {
+    "ref": "Shemot 20:2",
+    "book": "Shemot",
+    "he": "אָנֹכִי הִ׳ אֱלֹהֶיךָ אַשֶׁר הוֹצֵאתִיךָ מֵאֶרֶץ מִצְרֲַים",
+    "es": "Yo soy Hashem tu Dios, que te saqué de la tierra de Egipto."
+  },
+  {
+    "ref": "Vayikra 19:18",
+    "book": "Vayikra",
+    "he": "לֹ תִקֹּם וְלֹ תִטֹּר... וְאָהַבֶתֲִ לֶרֵעֲךָ כָמֹךָ",
+    "es": "No te vengarás ni guardarás rencor... amarás a tu prójimo como a ti mismo."
+  },
+  {
+    "ref": "Devarim 6:5",
+    "book": "Devarim",
+    "he": "וְאָהַבֶתֲִ אֵת ה׳ אֱלֹהֶיךָ בִֵכָל לֶבָב׳ךָ",
+    "es": "Amarás a Hashem tu Dios con todo tu corazón."
+  },
+  {
+    "ref": "Tehilim 23:1",
+    "book": "Tehilim",
+    "he": "מִזְמֹר לְדָוִד... יְהֵוַָה רֹעִי לֹ אְחְסָר",
+    "es": "Salmo de David... Hashem es mi pastor, nada me faltará."
+  },
+  {
+    "ref": "Bamidbar 6:24",
+    "book": "Bamidbar",
+    "he": "יְבָרֶכְךָ ה׳ וְיִש׀מְרֶךָ",
+    "es": "Que Hashem te bendiga y te proteja."
+  },
+  {
+    "ref": "Yehoshúa 1:9",
+    "book": "Yehoshúa",
+    "he": "הֲלֹא צִוְיתִיךָ... חַזָק וֶאֵמָץ",
+    "es": "¿No te he ordenado? ¡Sé fuerte y valiente!..."
+  },
+  {
+    "ref": "Shir Hashirim 2:1",
+    "book": "Shir Hashirim",
+    "he": "אְנִי חַבֶצֶלֶת הְשָׁׁרֹן",
+    "es": "Yo soy la rosa del Sharon."
+  }
+]
